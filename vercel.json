@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/save-call", "destination": "/api/save-call" }
+  ]
+}
