@@ -534,7 +534,7 @@
   <!-- MOTIVO -->
   <div class="card field" style="margin-bottom:.875rem">
     <span class="field-label">Motivo de la llamada</span>
-    <select id="fReason">
+    <select id="fReason" onchange="toggleAdminField(this.value)">
       <option value="">— Seleccionar motivo —</option>
       <option>Financial Request</option>
       <option>Call Transfer Request</option>
@@ -555,6 +555,55 @@
       <option value="Contestó">Contestó</option>
       <option value="No contestó">No contestó</option>
       <option value="Voice mail">Voice mail</option>
+    </select>
+  </div>
+
+  <div id="adminField" class="card field" style="margin-bottom:.875rem;display:none">
+    <span class="field-label">Administrador a contactar <span style="color:#E24B4A">*</span></span>
+    <select id="fAdmin" onchange="setAdminEmail(this.value)">
+      <option value="">— Seleccionar administrador —</option>
+      <option value="Diana Luciano|dluciano@icon.management">Diana Luciano</option>
+      <option value="Wanda Bonilla|wbonilla@icon.management">Wanda Bonilla</option>
+      <option value="Judith Pagan Tirado|jpagan@icon.management">Judith Pagan Tirado</option>
+      <option value="Raymond Cora|rreyes@icon.management">Raymond Cora</option>
+      <option value="Maria Aponte|maponte@icon.management">Maria Aponte</option>
+      <option value="Luciano Camacho|lcamacho@icon.management">Luciano Camacho</option>
+      <option value="Joanis Menendez|jmenendez@icon.management">Joanis Menendez</option>
+      <option value="America I Perez Hernandez|aperez@icon.management">America I Perez Hernandez</option>
+      <option value="Michelle Estrada|mestrada@icon.management">Michelle Estrada</option>
+      <option value="Ivette Kaba|ikaba@icon.management">Ivette Kaba</option>
+      <option value="Ivette Cuadrado|icuadrado@icon.management">Ivette Cuadrado</option>
+      <option value="Darcy Ayala|dayala@icon.management">Darcy Ayala</option>
+      <option value="Maria Liriano|mliriano@icon.management">Maria Liriano</option>
+      <option value="Lyana Medina|lmedina@icon.management">Lyana Medina</option>
+      <option value="Angel Laureano|apena@icon.management">Angel Laureano</option>
+      <option value="Rose Colon|rcolon@icon.management">Rose Colon</option>
+      <option value="Agnes E Garcia Rivera|agarcia@icon.management">Agnes E Garcia Rivera</option>
+      <option value="Cynthia La Santa|jfonseca@icon.management">Cynthia La Santa</option>
+      <option value="Vanessa Sanchez|vsanchez@icon.management">Vanessa Sanchez</option>
+      <option value="Francois Velez|fvelez@icon.management">Francois Velez</option>
+      <option value="Mary Hernandez|mhernandez@icon.management">Mary Hernandez</option>
+      <option value="Maria Laura Rivera|mlrivera@icon.management">Maria Laura Rivera</option>
+      <option value="Jessica Morales|jmorales@icon.management">Jessica Morales</option>
+      <option value="Jesus Castro Gordon|jcastro@icon.management">Jesus Castro Gordon</option>
+      <option value="Lauren Montes|lmontes@icon.management">Lauren Montes</option>
+      <option value="Gladys Ivelisse Gonzalez Sanchez|igonzalez@icon.management">Gladys Ivelisse Gonzalez Sanchez</option>
+      <option value="Myrna I Romero Marrero|mromero@icon.management">Myrna I Romero Marrero</option>
+      <option value="Joe Fontanez|jfontanez@icon.management">Joe Fontanez</option>
+      <option value="Maria de los Ang Santiago Torres|msantiago@icon.management">Maria de los Ang Santiago Torres</option>
+      <option value="Noemi Ramos|nramos@icon.management">Noemi Ramos</option>
+      <option value="Angel Acosta|aacosta@icon.management">Angel Acosta</option>
+      <option value="Alexander De Jesus|adejesus@icon.management">Alexander De Jesus</option>
+      <option value="Smyrna I Onna|sonna@icon.management">Smyrna I Onna</option>
+      <option value="Sandra Santiago|ssantiago@icon.management">Sandra Santiago</option>
+      <option value="Jose Cepeda|jcepeda@icon.management">Jose Cepeda</option>
+      <option value="Monica Midence|mmidence@icon.management">Monica Midence</option>
+      <option value="Sammuel Maldonado|smaldonado@icon.management">Sammuel Maldonado</option>
+      <option value="Eduardo Pantoja|epantojas@icon.management">Eduardo Pantoja</option>
+      <option value="Giannie Santiago|gsantiago@icon.management">Giannie Santiago</option>
+      <option value="Natasha Torres|ntorres@icon.management">Natasha Torres</option>
+      <option value="Kalina Aleman|kaleman@icon.management">Kalina Aleman</option>
+      <option value="Raiza Lopez|rlopez@icon.management">Raiza Lopez</option>
     </select>
   </div>
 
@@ -754,6 +803,16 @@
     window.location.href = 'callto:' + phone;
   }
 
+  function toggleAdminField(val) {
+    const show = val === 'Call Transfer Request';
+    document.getElementById('adminField').style.display = show ? 'block' : 'none';
+    if (!show && document.getElementById('fAdmin')) document.getElementById('fAdmin').value = '';
+  }
+
+  function setAdminEmail(val) {
+    // valor ya viene como "Nombre|email" — se parsea en saveLog
+  }
+
   (function readURL() {
     const p = new URLSearchParams(window.location.search);
     const ph = p.get('phone');
@@ -819,6 +878,9 @@
     const notes    = document.getElementById('fNotes').value.trim();
     const caller         = document.getElementById('fCaller').value.trim();
     const callbackResult = document.getElementById('fCallbackResult').value;
+    const adminSel       = document.getElementById('fAdmin');
+    const adminVal       = adminSel ? adminSel.value : '';
+    const [adminName, adminEmail] = adminVal ? adminVal.split('|') : ['', ''];
     const time     = document.getElementById('fTime').textContent;
     const date     = document.getElementById('fDate').textContent;
 
@@ -836,6 +898,8 @@
       `**Titular:** ${name}`,
       caller ? `**Quien llamó:** ${caller}` : null,
       callbackResult ? `**Resultado Callback:** ${callbackResult}` : null,
+      adminName  ? `**Administrador:** ${adminName}` : null,
+      adminEmail ? `**Email Admin:** ${adminEmail}` : null,
       `**Teléfono:** ${document.getElementById('cbPhone').textContent || '—'}`,
       `**Comunidad:** ${condoName}`,
       account ? `**No. de cuenta:** ${account}` : null,
@@ -861,7 +925,7 @@
         body: JSON.stringify({
           taskName, description: desc, condoOptionId,
           listId: LIST_ID, comunidadFieldId: COMUNIDAD_FIELD_ID,
-          priority: 'normal', assigneeId, accountNumber: account, callDate: date, email1, email2,
+          priority: 'normal', assigneeId, accountNumber: account, callDate: date, email1, email2, adminEmail, adminName,
         }),
       });
 
@@ -908,6 +972,8 @@
   function clearForm() {
     ['fName','fCaller','fAccount','fEmail1','fNotes'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('fCallbackResult').value = '';
+    if (document.getElementById('fAdmin')) document.getElementById('fAdmin').value = '';
+    document.getElementById('adminField').style.display = 'none';
     currentEmail2 = '';
     document.getElementById('fAgent').value = '';
     document.getElementById('fReason').value = '';

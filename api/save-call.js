@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     taskName, description, condoOptionId,
     listId, comunidadFieldId, priority,
     assigneeId, accountNumber, callDate,
-    email1, email2,
+    email1, email2, adminEmail, adminName,
   } = req.body;
 
   const LIST_ID            = listId           || '901327231494';
@@ -22,6 +22,8 @@ export default async function handler(req, res) {
   const EMAIL1_FIELD_ID    = '66fbb335-d5cd-46fb-9f5c-72d47754899b';
   const EMAIL2_FIELD_ID    = '3e9f7722-3e18-4c4f-a196-f2ca2adf570b';
   const DATE_FIELD_ID      = 'PENDING_DATE_FIELD_ID';
+  const ADMIN_NAME_ID      = '37ec5454-251b-458d-b0d6-978131558a88';
+  const ADMIN_EMAIL_ID     = '87438049-cfba-4c55-858f-ff10fe5f6629';
 
   try {
     const cuPayload = {
@@ -37,6 +39,8 @@ export default async function handler(req, res) {
         ...(accountNumber ? [{ id: ACCOUNT_FIELD_ID, value: accountNumber }] : []),
         ...(email1        ? [{ id: EMAIL1_FIELD_ID, value: email1 }] : []),
         ...(email2        ? [{ id: EMAIL2_FIELD_ID, value: email2 }] : []),
+        ...(adminName  ? [{ id: ADMIN_NAME_ID,  value: adminName  }] : []),
+        ...(adminEmail ? [{ id: ADMIN_EMAIL_ID, value: adminEmail }] : []),
         ...(callDate && DATE_FIELD_ID !== 'PENDING_DATE_FIELD_ID'
             ? [{ id: DATE_FIELD_ID, value: new Date(callDate).getTime() }] : []),
       ],
