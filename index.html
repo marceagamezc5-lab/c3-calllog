@@ -534,17 +534,18 @@
   <!-- MOTIVO -->
   <div class="card field" style="margin-bottom:.875rem">
     <span class="field-label">Motivo de la llamada <span style="font-size:9px;color:#9a9a96;font-weight:400">(selecciona uno o varios)</span></span>
-    <div id="reasonBoxes" style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Financial Request" onchange="onReasonChange()"> Financial Request</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Call Transfer Request" onchange="onReasonChange()"> Call Transfer Request</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="General Request" onchange="onReasonChange()"> General Request</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Emergency" onchange="onReasonChange()"> Emergency</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Vendor" onchange="onReasonChange()"> Vendor</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Reserva Áreas Comunes" onchange="onReasonChange()"> Reserva Áreas Comunes</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Seguimiento a Work Order" onchange="onReasonChange()"> Seguimiento a Work Order</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0;border-bottom:1px solid var(--border)"><input type="checkbox" value="Escalamiento" onchange="onReasonChange()"> Escalamiento</label>
-      <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:7px 0"><input type="checkbox" value="Otro" onchange="onReasonChange()"> Otro</label>
-    </div>
+    <select id="fReason" multiple size="9" onchange="onReasonChange()" style="width:100%;font-size:13px;border:1px solid var(--border);border-radius:6px;padding:4px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none">
+      <option value="Financial Request">Financial Request</option>
+      <option value="Call Transfer Request">Call Transfer Request</option>
+      <option value="General Request">General Request</option>
+      <option value="Emergency">Emergency</option>
+      <option value="Vendor">Vendor</option>
+      <option value="Reserva Áreas Comunes">Reserva Áreas Comunes</option>
+      <option value="Seguimiento a Work Order">Seguimiento a Work Order</option>
+      <option value="Escalamiento">Escalamiento</option>
+      <option value="Otro">Otro</option>
+    </select>
+    <p style="font-size:10px;color:#9a9a96;margin-top:4px">Mantén Ctrl (Windows) o Cmd (Mac) para seleccionar hasta 2 opciones</p>
   </div>
 
   <!-- NOTAS -->
@@ -824,8 +825,16 @@
   }
 
   function onReasonChange() {
-    const checked = Array.from(document.querySelectorAll('#reasonBoxes input[type=checkbox]:checked')).map(c => c.value);
-    const show = checked.includes('Call Transfer Request') || checked.includes('Escalamiento');
+    const sel = document.getElementById('fReason');
+    const selected = Array.from(sel.selectedOptions).map(o => o.value);
+    // Limitar a 2 opciones
+    if (selected.length > 2) {
+      // Deseleccionar la primera opción seleccionada
+      const firstSelected = Array.from(sel.options).find(o => o.selected && !selected.slice(-2).includes(o.value));
+      if (firstSelected) firstSelected.selected = false;
+    }
+    const vals = Array.from(sel.selectedOptions).map(o => o.value);
+    const show = vals.includes('Call Transfer Request') || vals.includes('Escalamiento');
     document.getElementById('adminField').style.display = show ? 'block' : 'none';
     if (!show && document.getElementById('fAdmin')) document.getElementById('fAdmin').value = '';
   }
@@ -899,7 +908,7 @@
     const agentSel  = document.getElementById('fAgent');
     const agent      = agentSel.options[agentSel.selectedIndex]?.text || '';
     const assigneeId = agentSel.value || '';
-    const reason = Array.from(document.querySelectorAll('#reasonBoxes input[type=checkbox]:checked')).map(c => c.value).join(', ') || '';
+    const reason = Array.from(document.getElementById('fReason').selectedOptions).map(o => o.value).join(', ') || '';
     const notes    = document.getElementById('fNotes').value.trim();
     const caller         = document.getElementById('fCaller').value.trim();
     const callbackResult = document.getElementById('fCallbackResult').value;
@@ -1001,7 +1010,7 @@
     document.getElementById('adminField').style.display = 'none';
     currentEmail2 = '';
     document.getElementById('fAgent').value = '';
-    document.querySelectorAll('#reasonBoxes input[type=checkbox]').forEach(c => c.checked = false);
+    Array.from(document.getElementById('fReason').options).forEach(o => o.selected = false);
     onReasonChange();
     document.getElementById('fCondo').value  = '';
     document.getElementById('fDate').textContent = '—';
