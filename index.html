@@ -533,18 +533,18 @@
 
   <!-- MOTIVO -->
   <div class="card field" style="margin-bottom:.875rem">
-    <span class="field-label">Motivo de la llamada</span>
-    <select id="fReason" onchange="toggleAdminField(this.value)">
-      <option value="">— Seleccionar motivo —</option>
-      <option>Financial Request</option>
-      <option value="Call Transfer Request">Call Transfer Request</option>
-      <option>General Request</option>
-      <option>Emergency</option>
-      <option>Vendor</option>
-      <option>Reserva Áreas Comunes</option>
-      <option>Seguimiento a Work Order</option>
-      <option>Otro</option>
-    </select>
+    <span class="field-label">Motivo de la llamada <span style="font-size:9px;color:#9a9a96;font-weight:400">(selecciona uno o varios)</span></span>
+    <div id="reasonBoxes" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Financial Request" onchange="onReasonChange()"> Financial Request</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Call Transfer Request" onchange="onReasonChange()"> Call Transfer Request</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="General Request" onchange="onReasonChange()"> General Request</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Emergency" onchange="onReasonChange()"> Emergency</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Vendor" onchange="onReasonChange()"> Vendor</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Reserva Áreas Comunes" onchange="onReasonChange()"> Reserva Áreas Comunes</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Seguimiento a Work Order" onchange="onReasonChange()"> Seguimiento a Work Order</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Escalamiento" onchange="onReasonChange()"> Escalamiento</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;min-width:180px"><input type="checkbox" value="Otro" onchange="onReasonChange()"> Otro</label>
+    </div>
   </div>
 
   <!-- NOTAS -->
@@ -823,10 +823,15 @@
     window.location.href = 'callto:' + phone;
   }
 
-  function toggleAdminField(val) {
-    const show = val === 'Call Transfer Request';
+  function onReasonChange() {
+    const checked = Array.from(document.querySelectorAll('#reasonBoxes input[type=checkbox]:checked')).map(c => c.value);
+    const show = checked.includes('Call Transfer Request') || checked.includes('Escalamiento');
     document.getElementById('adminField').style.display = show ? 'block' : 'none';
     if (!show && document.getElementById('fAdmin')) document.getElementById('fAdmin').value = '';
+  }
+
+  function toggleAdminField(val) {
+    // Mantenido por compatibilidad — usar onReasonChange
   }
 
   function setAdminEmail(val) {
@@ -894,7 +899,7 @@
     const agentSel  = document.getElementById('fAgent');
     const agent      = agentSel.options[agentSel.selectedIndex]?.text || '';
     const assigneeId = agentSel.value || '';
-    const reason   = document.getElementById('fReason').value;
+    const reason = Array.from(document.querySelectorAll('#reasonBoxes input[type=checkbox]:checked')).map(c => c.value).join(', ') || '';
     const notes    = document.getElementById('fNotes').value.trim();
     const caller         = document.getElementById('fCaller').value.trim();
     const callbackResult = document.getElementById('fCallbackResult').value;
@@ -996,7 +1001,8 @@
     document.getElementById('adminField').style.display = 'none';
     currentEmail2 = '';
     document.getElementById('fAgent').value = '';
-    document.getElementById('fReason').value = '';
+    document.querySelectorAll('#reasonBoxes input[type=checkbox]').forEach(c => c.checked = false);
+    onReasonChange();
     document.getElementById('fCondo').value  = '';
     document.getElementById('fDate').textContent = '—';
     document.getElementById('fTime').textContent = '—';
