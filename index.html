@@ -603,7 +603,7 @@
       <option value="Eduardo Pantoja|epantojas@icon.management">Eduardo Pantoja</option>
       <option value="Giannie Santiago|gsantiago@icon.management">Giannie Santiago</option>
       <option value="Natasha Torres|ntorres@icon.management">Natasha Torres</option>
-      <option value="Kalina Aleman|kaleman@icon.management">Kalina Aleman</option>
+      <option value="Kalina Aleman|kaleman@icon.managemen">Kalina Aleman</option>
       <option value="Raiza Lopez|rlopez@icon.management">Raiza Lopez</option>
       <option value="Marcela Agamez|magamez@icon.management">Marcela Agamez</option>
       <option value="Maria Katira Romero|mkromero@icon.management">Maria Katira Romero</option>
@@ -625,7 +625,6 @@
       <option value="Veronica Morales|vmorales@icon.management">Veronica Morales</option>
       <option value="Natalia Benjumea|nbenjumea@icon.management">Natalia Benjumea</option>
       <option value="Victor Morell|vmorell@icon.management">Victor Morell</option>
-      <option value="Jessica Fonseca|jfonseca@icon.management">Jessica Fonseca</option>
     </select>
   </div>
 
@@ -952,7 +951,7 @@
         body: JSON.stringify({
           taskName, description: desc, condoOptionId,
           listId: LIST_ID, comunidadFieldId: COMUNIDAD_FIELD_ID,
-          priority: 'normal', assigneeId, accountNumber: account, callDate: date, email1, email2, adminEmail, adminName, notes, motivo: reason,
+          priority: 'normal', assigneeId, accountNumber: account, callDate: date, email1, email2, adminEmail, adminName, notes, motivo: reason, phone: document.getElementById('cbPhone').textContent || '',
         }),
       });
 
