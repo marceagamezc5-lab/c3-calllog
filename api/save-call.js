@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     taskName, description, condoOptionId,
     listId, comunidadFieldId, priority,
     assigneeId, accountNumber, callDate,
-    email1, email2, adminEmail, adminName, notes, motivo,
+    email1, email2, adminEmail, adminName, notes, motivo, phone,
   } = req.body;
 
   const LIST_ID            = listId           || '901327231494';
@@ -26,6 +26,7 @@ export default async function handler(req, res) {
   const ADMIN_EMAIL_ID     = '87438049-cfba-4c55-858f-ff10fe5f6629';
   const NOTES_FIELD_ID     = '564b10cc-fb58-451b-aae4-cff5f12b5282';
   const MOTIVO_FIELD_ID    = 'b3e04c41-5802-43ce-aead-43068905cfac';
+  const PHONE_FIELD_ID     = 'ec14da7c-7270-42ef-aee7-9d2160a1ffdb';
 
   try {
     const cuPayload = {
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
         ...(adminEmail ? [{ id: ADMIN_EMAIL_ID, value: adminEmail }] : []),
         ...(notes  ? [{ id: NOTES_FIELD_ID,  value: notes  }] : []),
         ...(motivo ? [{ id: MOTIVO_FIELD_ID, value: motivo }] : []),
+        ...(phone  ? [{ id: PHONE_FIELD_ID,  value: phone  }] : []),
         ...(callDate && DATE_FIELD_ID !== 'PENDING_DATE_FIELD_ID'
             ? [{ id: DATE_FIELD_ID, value: new Date(callDate).getTime() }] : []),
       ],
